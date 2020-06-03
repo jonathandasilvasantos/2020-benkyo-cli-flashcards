@@ -21,6 +21,8 @@ def add(front, hidden, tag, count):
     card.tag = tag
     card.save()
 
-    if count > 1:
+    if (count > 1) or (count < 0):
+        if count < 0:
+            click.confirm('Do you want to continue?', abort=True)
         cmdline = [read_config('python_interpreter'), sys.argv[0], 'add', '-c', str(count-1) ]
         call(cmdline)
