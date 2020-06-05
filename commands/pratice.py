@@ -1,9 +1,8 @@
 import click
 from model.card import Card, scores
+from view.cardview import UICardData, UICardState, UICardCallbacks, UICardButton, UICard
 from numpy.random import choice
-import curses
-import traceback
-from utils.ui import initscreen, releasescreen
+from prompt_toolkit.application import get_app
 
 @click.command()
 def pratice():
@@ -16,30 +15,24 @@ def pratice():
         startui(entry)
 
 
+def next():
+    pass
+
+def reveal():
+    pass
+
 def startui(card):
 
-    k = 0
-
-    def refresh(stdscr):
-        stdscr.clear()
-        stdscr.border(0)
-        stdscr.addstr(5, 5, card.frontal, curses.A_BOLD)
-        stdscr.addstr(7, 5, 'Press q to close this screen', curses.A_NORMAL)
-        stdscr.addstr(8, 5, str(k), curses.A_NORMAL)
+    buttons = [ UICardButton('Next'), UICardButton('Reveal'), UICardButton('Quit', exit_)]
 
 
+    uicard_data = UICardData(card.frontal, card.hidden, card.tag)
+    uicard_state = UICardState(buttons)
+    uicard = UICard(uicard_data, uicard_state, None)
 
+    app = uicard.create_app()
+    app.run()
 
-    try:
-        stdscr = initscreen()
-        refresh(stdscr)
-        while True:
-            refresh(stdscr)
-            k = stdscr.getch()
-            if k == ord('q'):
-                break
-
-    except:
-        traceback.print_exc()     # print trace back log of the error
-    finally:
-        releasescreen(stdscr)
+def exit_():
+    get_app().exit()
+    exit(0)

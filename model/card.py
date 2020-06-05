@@ -1,3 +1,4 @@
+import numpy as np
 import peewee
 from utils.access import get_database
 
@@ -14,3 +15,10 @@ class Card(peewee.Model):
     class Meta:
         database = get_database()
         db_table = 'cards'
+
+
+def scores(cards):
+    p = []
+    for entry in cards:
+        p.append(entry.score)
+    return p
