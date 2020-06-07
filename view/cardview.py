@@ -7,12 +7,15 @@ from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.key_binding.bindings.focus import focus_next, focus_previous
 from prompt_toolkit.input import Input
 from prompt_toolkit.widgets import Box, Button
+from utils.singleton import Singleton
 
 class UICardData:
+    id = -1
     frontal = ''
     hidden = ''
     tag = ''
-    def __init__(self, frontal, hidden, tag):
+    def __init__(self, id, frontal, hidden, tag):
+        self.id = id
         self.frontal = frontal
         self.hidden = hidden
         self.tag = tag
@@ -22,12 +25,14 @@ class UICardState:
     frontal_editable = False
     hidden_editable = False
     tag_editable = False
+    show_hidden = False
 
-    def __init__(self, buttons, frontal_editable=False, hidden_editable=False, tag_editable=False):
+    def __init__(self, buttons, frontal_editable=False, hidden_editable=False, tag_editable=False, show_hidden=False):
         self.buttons = buttons
         self.frontal_editable = frontal_editable
         self.hidden_editable = hidden_editable
         self.tag_editable = tag_editable
+        self.show_hidden = show_hidden
 
 
 class UICardButton:
@@ -53,7 +58,7 @@ class UICardCallbacks:
 
 
 
-class UICard:
+class UICard(metaclass=Singleton):
     uicard_data = None
     uicard_state = None
     uicard_callbacks = None
@@ -71,6 +76,9 @@ class UICard:
         self.uicard_state = uicard_state
         self.uicard_callbacks = uicard_callbacks
         self.buttons_box = None
+
+        self.build_ui()
+        self.bind_keyboard()
 
 
 
@@ -104,16 +112,51 @@ class UICard:
             left_panel = Window(content=BufferControl(buffer=self.frontal_buffer), wrap_lines=True)
             right_panel = Window(content=BufferControl(buffer=self.hidden_buffer), wrap_lines=True)
             bottom_panel = self.buttons_box
+            tag_panel = VSplit([
+            Window(content=FormattedTextControl(text='TAG: '), width=5),
+            Window(content=BufferControl(buffer=self.tag_buffer))
+            ], height=1)
+
+
+
 
             vertical_container = VSplit([
+            Window(width=2, char='| '),
             left_panel,
-            Window(width=1, char='|'),
+            Window(width=3, char=' | '),
             right_panel,
+            Window(width=2, char=' |'),
             ])
 
-            root_container = HSplit([ vertical_container, Window(height=1, char='-'), bottom_panel])
+            title_panel = VSplit([
+            Window(width=2, char='| '),
+            Window(content=FormattedTextControl(text='Frontal Face')),
+            Window(width=3, char=' | '),
+            Window(content=FormattedTextControl(text='Hidden Face')),
+            Window(width=2, char=' |')
+            ], height=1)
+
+            footer_panel = VSplit([
+            Window(width=2, char='| '),
+            Window(content=FormattedTextControl(text='Status bar')),
+            Window(width=3, char=' | '),
+            tag_panel,
+            Window(width=2, char=' |'),
+            ], height=1)
+
+            root_container = HSplit([
+            Window(height=1, char='='),
+            title_panel,
+            Window(height=1, char='-'),
+            vertical_container,
+            Window(height=1, char='-'),
+            footer_panel,
+            Window(height=1, char='-'),
+            bottom_panel
+            ])
 
             self.layout = Layout(root_container)
+            self.layout.focus(self.buttons[0])
 
     def bind_keyboard(self):
 
@@ -125,14 +168,21 @@ class UICard:
 
 
 
-
-
     def fire(self):
-        pass
+        if self.uicard_state.frontal_editable == False:
+            self.frontal_buffer.text = self.uicard_data.frontal
+        if self.uicard_state.hidden_editable == False:
+            if self.uicard_state.show_hidden:
+                self.hidden_buffer.text = self.uicard_data.hidden
+            else:
+                self.hidden_buffer.text = ''
+        if self.uicard_state.tag_editable == False:
+            self.tag_buffer.text = self.uicard_data.tag
+
+
 
     def create_app(self):
-        self.build_ui()
-        self.bind_keyboard()
         app = Application(key_bindings=self.kb,layout=self.layout, full_screen=True)
         app.before_render = self
+
         return app

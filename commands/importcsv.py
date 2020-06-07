@@ -7,7 +7,7 @@ from model.card import Card
 @click.argument('path')
 @click.option('--frontalcol', '-fc', type=click.INT, default=0, help='Column index of Frontal Face')
 @click.option('--hiddencol', '-hfc', type=click.INT, default=1, help='Column index of Hidden Face')
-@click.option('--tagcol', '-tc', type=click.INT, default=1, help='Column index of TAG')
+@click.option('--tagcol', '-tc', type=click.INT, default=2, help='Column index of TAG')
 @click.option('--delimiter', type=click.STRING, default=',', help='CSV column delimiter character.')
 @click.option('--header', type=click.BOOL, default=False, help='Header (False by default)')
 def importcsv(path, frontalcol, hiddencol, tagcol, delimiter, header):
