@@ -21,9 +21,6 @@ def startui(card):
     uicard_state = UICardState(buttons)
     uicard = UICard(uicard_data, uicard_state, None)
 
-
-
-
     app = uicard.create_app()
     app.run()
 
@@ -33,11 +30,16 @@ def exit_():
     get_app().exit()
     exit(0)
 def reveal():
+    if UICard().uicard_state.show_hidden == False:
+        card = Card.select().where(Card.id == UICard().uicard_data.id)[0]
+        card.penality()
     UICard().uicard_state.show_hidden = True
+    get_app().layout.focus(UICard().buttons[0])
 
 def next():
-    card = Card.select().where(Card.id == UICard().uicard_data.id)[0]
-    card.reward()
+    if UICard().uicard_state.show_hidden == False:
+        card = Card.select().where(Card.id == UICard().uicard_data.id)[0]
+        card.reward()
 
 
     card = castcard()[0]

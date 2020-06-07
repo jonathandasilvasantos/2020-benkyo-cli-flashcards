@@ -3,12 +3,14 @@ import peewee
 from utils.access import get_database
 from utils.config import read_config
 from numpy.random import choice
+from numpy import min, max
+import numpy as np
 
 class Card(peewee.Model):
     frontal = peewee.TextField()
     hidden = peewee.TextField()
     tag = peewee.CharField()
-    score = peewee.IntegerField(default=100)
+    score = peewee.FloatField(default=100)
     level = peewee.IntegerField(default=0)
     phase = peewee.IntegerField(default=0)
     last = peewee.TimestampField()
@@ -28,14 +30,36 @@ class Card(peewee.Model):
 
 
 def scores(cards):
-    p = []
+    A = []
     for entry in cards:
-        p.append(entry.score)
-    return p
+        A.append(entry.score)
+    s = np.sum(A)
+    P = []
+    for index, entry in enumerate(A):
+        r = (entry * 100) / s
+        P.append(r/100)
+    return P
+
+
+
+
+    print(np.sum(np.array(A)))
+    A = (A-np.min(A))/(np.max(A)-np.min(A))
+    print(A)
+    exit(0)
+    return A
 
 def castcard(count=1, tag=None, replace=True):
     cards = Card.select()
     if tag is not None:
         cards = cards.where(tag == tag)
-    cards = choice(cards, count, scores(cards))
-    return cards
+
+    for c in cards:
+        pass
+    #exit(0)
+
+
+
+    selected = choice(cards, count, p = scores(cards) )
+
+    return selected
