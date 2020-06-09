@@ -8,53 +8,9 @@ from prompt_toolkit.key_binding.bindings.focus import focus_next, focus_previous
 from prompt_toolkit.input import Input
 from prompt_toolkit.widgets import Box, Button
 from utils.singleton import Singleton
-
-class UICardData:
-    id = -1
-    frontal = ''
-    hidden = ''
-    tag = ''
-    def __init__(self, id, frontal, hidden, tag):
-        self.id = id
-        self.frontal = frontal
-        self.hidden = hidden
-        self.tag = tag
-
-class UICardState:
-    buttons = None
-    frontal_editable = False
-    hidden_editable = False
-    tag_editable = False
-    show_hidden = False
-
-    def __init__(self, buttons, frontal_editable=False, hidden_editable=False, tag_editable=False, show_hidden=False):
-        self.buttons = buttons
-        self.frontal_editable = frontal_editable
-        self.hidden_editable = hidden_editable
-        self.tag_editable = tag_editable
-        self.show_hidden = show_hidden
-
-
-class UICardButton:
-    title = ''
-    callback = None
-
-    def __init__(self, title, callback=None):
-        self.title = title
-        self.callback = callback
-        if callback is None: self.callback = self.clicked
-
-    def clicked(event):
-        pass
-
-
-
-
-class UICardCallbacks:
-    updated_fields = None
-
-    def __init__(self, updated_fields):
-        self.updated_fields = updated_fields
+from view.widgets.uicardtoolbar import UICardToolbar, get_toolbar
+from view.model.uicardstate import UICardState
+from view.model.uicarddata import UICardData
 
 
 
@@ -67,6 +23,7 @@ class UICard(metaclass=Singleton):
     hidden_buffer = None
     tag_buffer = None
     buttons = []
+    edit_buttons = []
 
     kb = None
     layout = None
@@ -98,73 +55,102 @@ class UICard(metaclass=Singleton):
         self.tag_buffer.dont_extend_width = True
         self.tag_buffer.dont_extend_height = True
 
+        empty_buttons = [
+            Button('Empy', handler=self.exit_),
+            Button('Empy', handler=self.exit_),
+        ]
 
+        self.toolbar = VSplit(empty_buttons, height=1)
 
-        for b in self.uicard_state.buttons:
-            button = Button(b.title, handler=b.callback)
-            self.buttons.append(button)
-
-            self.buttons_box = Box(body=VSplit(self.buttons, padding=4), height=4)
-
-
-
-
-            left_panel = Window(content=BufferControl(buffer=self.frontal_buffer), wrap_lines=True)
-            right_panel = Window(content=BufferControl(buffer=self.hidden_buffer), wrap_lines=True)
-            bottom_panel = self.buttons_box
-            tag_panel = VSplit([
-            Window(content=FormattedTextControl(text='TAG: '), width=5),
-            Window(content=BufferControl(buffer=self.tag_buffer))
-            ], height=1)
+        left_panel = Window(content=BufferControl(buffer=self.frontal_buffer), wrap_lines=True)
+        right_panel = Window(content=BufferControl(buffer=self.hidden_buffer), wrap_lines=True)
+        self.bottom_panel = Box(self.toolbar, height=4)
+        tag_panel = VSplit([
+        Window(content=FormattedTextControl(text='TAG: '), width=5),
+        Window(content=BufferControl(buffer=self.tag_buffer))
+        ], height=1)
 
 
 
 
-            vertical_container = VSplit([
-            Window(width=2, char='| '),
-            left_panel,
-            Window(width=3, char=' | '),
-            right_panel,
-            Window(width=2, char=' |'),
-            ])
+        vertical_container = VSplit([
+        Window(width=2, char='| '),
+        left_panel,
+        Window(width=3, char=' | '),
+        right_panel,
+        Window(width=2, char=' |'),
+        ])
 
-            title_panel = VSplit([
-            Window(width=2, char='| '),
-            Window(content=FormattedTextControl(text='Frontal Face')),
-            Window(width=3, char=' | '),
-            Window(content=FormattedTextControl(text='Hidden Face')),
-            Window(width=2, char=' |')
-            ], height=1)
+        title_panel = VSplit([
+        Window(width=2, char='| '),
+        Window(content=FormattedTextControl(text='Frontal Face')),
+        Window(width=3, char=' | '),
+        Window(content=FormattedTextControl(text='Hidden Face')),
+        Window(width=2, char=' |')
+        ], height=1)
 
-            footer_panel = VSplit([
-            Window(width=2, char='| '),
-            Window(content=FormattedTextControl(text='Status bar')),
-            Window(width=3, char=' | '),
-            tag_panel,
-            Window(width=2, char=' |'),
-            ], height=1)
+        footer_panel = VSplit([
+        Window(width=2, char='| '),
+        Window(content=FormattedTextControl(text='Status bar')),
+        Window(width=3, char=' | '),
+        tag_panel,
+        Window(width=2, char=' |'),
+        ], height=1)
 
-            root_container = HSplit([
-            Window(height=1, char='='),
-            title_panel,
-            Window(height=1, char='-'),
-            vertical_container,
-            Window(height=1, char='-'),
-            footer_panel,
-            Window(height=1, char='-'),
-            bottom_panel
-            ])
+        root_container = HSplit([
+        Window(height=1, char='='),
+        title_panel,
+        Window(height=1, char='-'),
+        vertical_container,
+        Window(height=1, char='-'),
+        footer_panel,
+        Window(height=1, char='-'),
+        self.bottom_panel
+        ])
 
-            self.layout = Layout(root_container)
-            self.layout.focus(self.buttons[0])
+        self.layout = Layout(root_container)
+        self.show_toolbar('pratice')
+
+
+    def show_toolbar(self, id):
+        toolbar = get_toolbar(self.uicard_state.toolbars, id)
+        self.toolbar.children = toolbar.toolbar_panel.children
+        self.layout.focus(toolbar.prompt_buttons[0])
+
+
+
+    def change_mode(self, mode):
+        self.uicard_state.mode = mode
+        if get_toolbar(self.uicard_state.toolbars, mode) is not None:
+            self.show_toolbar(mode)
+
+
+
+    def exit_():
+        exit(0)
+    def restore():
+        pass
+    def save():
+        pass
+    def cancel(self):
+        pass
+
 
     def bind_keyboard(self):
 
-        self.kb = KeyBindings()
-        self.kb.add("tab")(focus_next)
-        self.kb.add("s-tab")(focus_previous)
-        ##self.kb.add("c-qab")(exit
 
+        kb = KeyBindings()
+        self.kb = kb
+        kb.add("tab")(focus_next)
+        kb.add("s-tab")(focus_previous)
+        for shortcut in self.uicard_state.shortcuts:
+            kb.add(shortcut.shortcut)(shortcut.callback)
+        kb.add("c-q")(quit_app)
+
+    def edit_mode(self, event):
+        self.uicard_state.mode = 'edit'
+        self.custom_buttons_vsplit.children = self.edit_buttons_vsplit.children
+        self.layout.focus(self.edit_buttons[0])
 
 
 
@@ -186,3 +172,7 @@ class UICard(metaclass=Singleton):
         app.before_render = self
 
         return app
+
+
+def quit_app(event):
+    exit(0)
