@@ -56,8 +56,8 @@ class UICard(metaclass=Singleton):
         self.tag_buffer.dont_extend_height = True
 
         empty_buttons = [
-            Button('Empy', handler=self.exit_),
-            Button('Empy', handler=self.exit_),
+            Button('Empy', handler=quit_app),
+            Button('Empy', handler=quit_app),
         ]
 
         self.toolbar = VSplit(empty_buttons, height=1)
@@ -126,14 +126,6 @@ class UICard(metaclass=Singleton):
 
 
 
-    def exit_():
-        exit(0)
-    def restore():
-        pass
-    def save():
-        pass
-    def cancel(self):
-        pass
 
 
     def bind_keyboard(self):
@@ -143,9 +135,13 @@ class UICard(metaclass=Singleton):
         self.kb = kb
         kb.add("tab")(focus_next)
         kb.add("s-tab")(focus_previous)
+        kb.add('s-left')(focus_previous)
+        kb.add('s-right')(focus_next)
+        kb.add('c-q')(quit_app)
+
         for shortcut in self.uicard_state.shortcuts:
             kb.add(shortcut.shortcut)(shortcut.callback)
-        kb.add("c-q")(quit_app)
+
 
     def edit_mode(self, event):
         self.uicard_state.mode = 'edit'
@@ -174,5 +170,6 @@ class UICard(metaclass=Singleton):
         return app
 
 
-def quit_app(event):
-    exit(0)
+def quit_app(event=None):
+    if event is not None:
+        event.app.exit()

@@ -36,7 +36,11 @@ def startui(card):
     ])
 
     shortcuts = [
-        UICardShortcut('edit', 'c-e', edit_shortcut)
+        UICardShortcut('edit', 'c-e', edit_shortcut),
+        UICardShortcut('save', 'c-s', save),
+        UICardShortcut('next', 'c-n', next),
+        UICardShortcut('revel', 'c-r', reveal),
+        UICardShortcut('cancel', 'escape', cancel)
     ]
 
 
@@ -58,13 +62,15 @@ def edit_shortcut(event):
     UICard().uicard_state.tag_editable = True
 
 
-def save():
+def save(event=None):
+    if UICard().uicard_state.mode != 'edit': return
     card = Card.select().where(Card.id == UICard().uicard_data.id)[0]
 
     card.frontal = UICard().frontal_buffer.text
     card.hidden = UICard().hidden_buffer.text
     card.tag = UICard().tag_buffer.text
     card.save()
+    UICard().uicard_data = UICardData(card.id, card.frontal, card.hidden, card.tag)
 
     UICard().uicard_state.frontal_editable = False
     UICard().uicard_state.hidden_editable = False
@@ -76,7 +82,8 @@ def save():
 
 
 
-def cancel():
+def cancel(event=None):
+    if UICard().uicard_state.mode != 'edit': return
     UICard().uicard_state.frontal_editable = False
     UICard().uicard_state.hidden_editable = False
     UICard().uicard_state.tag_editable = False
@@ -92,15 +99,18 @@ def cancel():
 def exit_():
     get_app().exit()
     exit(0)
-def reveal():
+def reveal(event=None):
+    if UICard().uicard_state.mode != 'pratice': return
     if UICard().uicard_state.show_hidden == False:
         card = Card.select().where(Card.id == UICard().uicard_data.id)[0]
         card.penality()
     UICard().uicard_state.show_hidden = True
+    UICard().hidden_buffer.text = UICard().uicard_data.hidden
     first_button = get_toolbar(UICard().uicard_state.toolbars, UICard().uicard_state.mode).prompt_buttons[0]
     UICard().change_mode('pratice_reveled')
 
-def next():
+def next(event=None):
+    if (UICard().uicard_state.mode != 'pratice') and (UICard().uicard_state.mode != 'pratice_reveled'): return
     if UICard().uicard_state.show_hidden == False:
         card = Card.select().where(Card.id == UICard().uicard_data.id)[0]
         card.reward()
