@@ -23,7 +23,10 @@ def importcsv(path, frontalcol, hiddencol, tagcol, delimiter, header):
             card = Card()
             card.frontal = row[frontalcol]
             card.hidden = row[hiddencol]
-            card.tag = row[tagcol]
+            try:
+                card.tag = row[tagcol]
+            except:
+                card.tag = 'default'
             card.save()
             entries = entries + 1
 

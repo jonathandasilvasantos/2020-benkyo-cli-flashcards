@@ -1,6 +1,7 @@
 pratice.sh
 .benkyo/*
 benkyo.egg-info/*
+.DS_Store/*
 build/*
 virt/*
 # Byte-compiled / optimized / DLL files
