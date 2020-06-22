@@ -12,6 +12,7 @@ Use pip to install benkyo:
 
 First, lets create a folder to keep our flashcards
 > mkdir my_flashcards
+
 > cd my_flashcards
 >
 Now we need to create a flashcards repository.
