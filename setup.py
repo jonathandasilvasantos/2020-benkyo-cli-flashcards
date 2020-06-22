@@ -2,12 +2,34 @@ from setuptools import setup, find_packages
 setup(
     name="benkyo",
     version="0.1",
-    py_modules=['benkyo', 'benkyo.commands', 'benkyo.utils', 'benkyo.model', 'benkyo.view', 'benkyo.view.model', 'benkyo.view.widget', 'benkyo.consts'],
+    py_modules=['benkyo.*',
+    'benkyo.model.card',
+'benkyo.commands.add',
+    'benkyo.commands.create',
+    'benkyo.commands.edit',
+    'benkyo.commands.importcsv',
+    'benkyo.commands.list',
+    'benkyo.commands.remove',
+    'benkyo.commands.pratice',
+    'benkyo.commands.version',
+    'benkyo.consts.consts',
+    'benkyo.utils.access',
+    'benkyo.utils.config',
+    'benkyo.utils.singleton',
+    'benkyo.utils.validate',
+    'benkyo.view.cardview',
+    'benkyo.view.model.uicardstate',
+    'benkyo.view.model.uicarddata',
+    'benkyo.view.model.uicardshortcut',
+    'benkyo.view.model.uicard',
+    'benkyo.view.widgets.uicardbutton',
+    'benkyo.view.widgets.uicardtoolbar'
+    ],
     #scripts=["install/installed.py"],
     install_requires=[ "click>=7.1.2", "numpy>=1.18.5", "peewee>=3.13.3", "prompt-toolkit>=3.0.5"],
     entry_points={
         'console_scripts': [
-            "benkyo=benkyo.benkyo:cli"
+            "benkyo=benkyo.app.entrypoint:cli"
         ],
     },
 
