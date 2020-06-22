@@ -1,0 +1,12 @@
+Metadata-Version: 1.1
+Name: benkyo
+Version: 0.1
+Summary: benkyo is a learning tool based on flashcards that is originally proposed just to run in terminal.
+Home-page: https://github.com/jonathandasilvasantos/2020-benkyo-cli-flashcards
+Author: Jonathan S. Santos
+Author-email: silva.santos.jonathan@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Keywords: flashcards learning memory review learn
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Python Software Foundation License
