@@ -1,5 +1,8 @@
 pratice.sh
 .benkyo/*
+benkyo.egg-info/*
+build/*
+virt/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

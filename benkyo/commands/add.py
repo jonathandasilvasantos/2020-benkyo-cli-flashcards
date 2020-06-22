@@ -1,8 +1,8 @@
 import click
 import os
-from model.card import Card
-from utils.validate import assert_repository_is_avaliable
-from utils.config import read_config
+from ..model.card import Card
+from ..utils.validate import assert_repository_is_avaliable
+from ..utils.config import read_config
 from subprocess import call
 import sys
 

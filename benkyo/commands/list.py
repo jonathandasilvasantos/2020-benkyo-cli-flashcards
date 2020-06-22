@@ -1,6 +1,6 @@
 import click
 import peewee
-from model.card import Card
+from ..model.card import Card
 
 
 @click.command()

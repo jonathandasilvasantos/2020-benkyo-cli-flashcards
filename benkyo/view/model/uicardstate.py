@@ -1,4 +1,4 @@
-from view.model.uicardshortcut import UICardShortcut
+from ...view.model.uicardshortcut import UICardShortcut
 
 class UICardState:
     toolbars = []

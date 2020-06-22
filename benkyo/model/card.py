@@ -1,7 +1,7 @@
 import numpy as np
 import peewee
-from utils.access import get_database
-from utils.config import read_config
+from ..utils.access import get_database
+from ..utils.config import read_config
 from numpy.random import choice
 from numpy import min, max
 import numpy as np

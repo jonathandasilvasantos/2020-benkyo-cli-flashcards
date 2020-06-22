@@ -1,5 +1,5 @@
 import click
-from model.card import Card
+from ..model.card import Card
 
 @click.command()
 @click.option('--cardid', '-id', type=click.INT, default=-1, help='Specify a card to be removed')

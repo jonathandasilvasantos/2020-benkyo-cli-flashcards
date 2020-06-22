@@ -1,5 +1,5 @@
 import os
-import consts
+from ..consts import consts
 
 def read_config(keyname):
     result = ''

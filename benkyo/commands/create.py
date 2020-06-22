@@ -1,8 +1,8 @@
 import click
 import os
-from model.card import Card
-from utils.config import read_config
-from utils.validate import is_repository_avaliable
+from ..model.card import Card
+from ..utils.config import read_config
+from ..utils.validate import is_repository_avaliable
 
 @click.command()
 @click.argument('path')

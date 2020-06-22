@@ -1,5 +1,5 @@
 import click
-from model.card import Card
+from ..model.card import Card
 import peewee
 
 

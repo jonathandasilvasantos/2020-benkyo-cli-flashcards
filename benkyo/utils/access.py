@@ -1,7 +1,7 @@
 import peewee
 import os
 
-from utils.config import read_config
+from ..utils.config import read_config
 
 def get_database():
     cwd = os.getcwd()

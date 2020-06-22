@@ -1,13 +1,13 @@
 import click
-from utils.config import read_config
-from model.card import Card, castcard
-from view.cardview import UICard
-from view.model.uicardstate import UICardState
-from view.model.uicarddata import UICardData
-from view.model.uicardshortcut import UICardShortcut
+from ..utils.config import read_config
+from ..model.card import Card, castcard
+from ..view.cardview import UICard
+from ..view.model.uicardstate import UICardState
+from ..view.model.uicarddata import UICardData
+from ..view.model.uicardshortcut import UICardShortcut
 from prompt_toolkit.application import get_app
-from view.widgets.uicardtoolbar import UICardToolbar, get_toolbar
-from view.widgets.uicardbutton import UICardButton
+from ..view.widgets.uicardtoolbar import UICardToolbar, get_toolbar
+from ..view.widgets.uicardbutton import UICardButton
 
 
 @click.command()

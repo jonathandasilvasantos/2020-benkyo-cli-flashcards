@@ -1,6 +1,6 @@
 import click
 import os
-from utils.config import read_config
+from ..utils.config import read_config
 
 def is_repository_avaliable():
     cwd = os.getcwd()

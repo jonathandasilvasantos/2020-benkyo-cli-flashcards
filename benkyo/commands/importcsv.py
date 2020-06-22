@@ -1,7 +1,7 @@
 import os
 import csv
 import click
-from model.card import Card
+from ..model.card import Card
 
 @click.command()
 @click.argument('path')
