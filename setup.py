@@ -27,6 +27,7 @@ setup(
     ],
     #scripts=["install/installed.py"],
     install_requires=[ "click>=7.1.2", "numpy>=1.18.5", "peewee>=3.13.3", "prompt-toolkit>=3.0.5"],
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
             "benkyo=benkyo.app.entrypoint:cli"
